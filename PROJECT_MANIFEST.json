@@ -1,0 +1,19 @@
+{
+  "project": "TaraCommute",
+  "package_type": "Flutter source starter",
+  "files": [
+    ".github/workflows/android-apk.yml",
+    ".gitignore",
+    "README.md",
+    "analysis_options.yaml",
+    "lib/data/dc_bus_routes.dart",
+    "lib/main.dart",
+    "pubspec.yaml",
+    "supabase/migrations/0001_initial_schema.sql"
+  ],
+  "notes": [
+    "Android platform folder must be generated with Flutter before first APK build if absent.",
+    "No real stop coordinates, live traffic, bus tracking, fares, or emergency dispatch are fabricated.",
+    "Flutter compilation has not been run in this environment."
+  ]
+}
