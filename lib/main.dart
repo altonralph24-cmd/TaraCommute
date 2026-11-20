@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -8,6 +9,7 @@ import 'core/config/app_config.dart';
 import 'core/theme/app_theme.dart';
 import 'app/navigation/app_bottom_navigation.dart';
 import 'shared/widgets/responsive_content.dart';
+import 'features/auth/presentation/auth_gate.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +18,8 @@ Future<void> main() async {
   const supabasePublishableKey =
       String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY');
 
-  if (supabaseUrl.isNotEmpty && supabasePublishableKey.isNotEmpty) {
+  if (supabaseUrl.isNotEmpty &&
+      supabasePublishableKey.isNotEmpty) {
     await Supabase.initialize(
       url: supabaseUrl,
       publishableKey: supabasePublishableKey,
@@ -35,10 +38,61 @@ class TaraCommuteApp extends StatelessWidget {
       title: AppConfig.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const MainShell(),
+      home: Supabase.instance.isInitialized
+          ? const AuthGate(
+              authenticatedPage: MainShell(),
+            )
+          : const SupabaseSetupRequiredPage(),
     );
   }
 }
+
+// SUPABASE CONFIGURATION REQUIRED
+
+class SupabaseSetupRequiredPage extends StatelessWidget {
+  const SupabaseSetupRequiredPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.cloud_off_outlined,
+                  size: 64,
+                  color: Colors.orange,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'TaraCommute Configuration Required',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 12),
+                Text(
+                  'Supabase is not configured. Please configure '
+                  'the required application environment variables '
+                  'before using TaraCommute.',
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// MAIN APPLICATION SHELL
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -119,6 +173,8 @@ class _MainShellState extends State<MainShell> {
     );
   }
 }
+
+// EMERGENCY INFORMATION
 
 void showEmergencyDialog(BuildContext context) {
   showDialog<void>(
@@ -472,7 +528,7 @@ class _CommutePageState extends State<CommutePage> {
   }
 }
 
-// NEARBY PAGE (EXISTING EXPLORE FEATURE)
+// NEARBY PAGE
 
 class ExplorePage extends StatelessWidget {
   const ExplorePage({super.key});
@@ -533,7 +589,7 @@ class ExplorePage extends StatelessWidget {
   }
 }
 
-// TERMINALS PAGE — STEP 9.6 RESPONSIVE UPDATE
+// TERMINALS PAGE
 
 class TerminalsPage extends StatelessWidget {
   const TerminalsPage({super.key});
@@ -571,7 +627,7 @@ class TerminalsPage extends StatelessWidget {
   }
 }
 
-// ADVISORIES PAGE — STEP 9.7 RESPONSIVE UPDATE
+// ADVISORIES PAGE
 
 class ReportsPage extends StatelessWidget {
   const ReportsPage({super.key});
@@ -664,35 +720,3 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const Card(
-              child: ListTile(
-                leading: Icon(Icons.bookmark_outline),
-                title: Text('Saved trips'),
-                subtitle: Text(
-                  'Coming in a later development step',
-                ),
-              ),
-            ),
-            const Card(
-              child: ListTile(
-                leading: Icon(Icons.language),
-                title: Text('Language'),
-                subtitle: Text(
-                  'English / Filipino support will be added',
-                ),
-              ),
-            ),
-            const Card(
-              child: ListTile(
-                leading: Icon(Icons.privacy_tip_outlined),
-                title: Text('Privacy and terms'),
-                subtitle: Text(
-                  'Privacy notice and terms must be completed before public launch',
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
