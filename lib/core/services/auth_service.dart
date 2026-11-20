@@ -1,3 +1,4 @@
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService {
@@ -7,13 +8,31 @@ class AuthService {
 
   bool get isLoggedIn => currentUser != null;
 
+  bool get isEmailVerified =>
+      currentUser?.emailConfirmedAt != null;
+
+  String? get currentUserEmail => currentUser?.email;
+
+  String? get currentUserFullName {
+    final metadata = currentUser?.userMetadata;
+    return metadata?['full_name'] as String?;
+  }
+
   Future<AuthResponse> register({
     required String email,
     required String password,
+    String? fullName,
   }) async {
+    final trimmedName = fullName?.trim();
+
     return await _client.auth.signUp(
       email: email.trim(),
       password: password,
+      data: trimmedName == null || trimmedName.isEmpty
+          ? null
+          : {
+              'full_name': trimmedName,
+            },
     );
   }
 
