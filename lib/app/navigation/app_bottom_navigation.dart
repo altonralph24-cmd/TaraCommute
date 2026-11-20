@@ -1,17 +1,18 @@
 
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../shared/icons/app_icons.dart';
 
 class AppBottomNavigation extends StatelessWidget {
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+
   const AppBottomNavigation({
     super.key,
     required this.currentIndex,
     required this.onTap,
   });
-
-  final int currentIndex;
-  final ValueChanged<int> onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +20,13 @@ class AppBottomNavigation extends StatelessWidget {
       currentIndex: currentIndex,
       onTap: onTap,
       type: BottomNavigationBarType.fixed,
-      backgroundColor: AppColors.navigationBar,
-      selectedItemColor: AppColors.navigationSelected,
-      unselectedItemColor: AppColors.navigationUnselected,
-      selectedFontSize: 11,
+      backgroundColor: AppColors.primary,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.white70,
+      selectedFontSize: 12,
       unselectedFontSize: 11,
       showSelectedLabels: true,
       showUnselectedLabels: true,
-      elevation: 8,
       items: const [
         BottomNavigationBarItem(
           icon: Icon(AppIcons.home),
