@@ -628,65 +628,70 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Profile'),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const CircleAvatar(
-            radius: 34,
-            child: Icon(
-              Icons.person,
-              size: 36,
-            ),
-          ),
-          const SizedBox(height: 12),
-          const Text(
-            'Your TaraCommute profile',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.cloud_outlined),
-              title: const Text('Online database'),
-              subtitle: Text(
-                connected
-                    ? 'Supabase connection initialized'
-                    : 'Starter mode — Supabase keys not added',
+      body: ResponsiveContent(
+        maxWidth: 900,
+        child: ListView(
+          children: [
+            const SizedBox(height: 12),
+            const Center(
+              child: CircleAvatar(
+                radius: 34,
+                child: Icon(
+                  Icons.person,
+                  size: 36,
+                ),
               ),
             ),
-          ),
-          const Card(
-            child: ListTile(
-              leading: Icon(Icons.bookmark_outline),
-              title: Text('Saved trips'),
-              subtitle: Text(
-                'Coming in a later development step',
+            const SizedBox(height: 12),
+            const Text(
+              'Your TaraCommute profile',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-          const Card(
-            child: ListTile(
-              leading: Icon(Icons.language),
-              title: Text('Language'),
-              subtitle: Text(
-                'English / Filipino support will be added',
+            const SizedBox(height: 16),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.cloud_outlined),
+                title: const Text('Online database'),
+                subtitle: Text(
+                  connected
+                      ? 'Supabase connection initialized'
+                      : 'Starter mode — Supabase keys not added',
+                ),
               ),
             ),
-          ),
-          const Card(
-            child: ListTile(
-              leading: Icon(Icons.privacy_tip_outlined),
-              title: Text('Privacy and terms'),
-              subtitle: Text(
-                'Privacy notice and terms must be completed before public launch',
+            const Card(
+              child: ListTile(
+                leading: Icon(Icons.bookmark_outline),
+                title: Text('Saved trips'),
+                subtitle: Text(
+                  'Coming in a later development step',
+                ),
               ),
             ),
-          ),
-        ],
+            const Card(
+              child: ListTile(
+                leading: Icon(Icons.language),
+                title: Text('Language'),
+                subtitle: Text(
+                  'English / Filipino support will be added',
+                ),
+              ),
+            ),
+            const Card(
+              child: ListTile(
+                leading: Icon(Icons.privacy_tip_outlined),
+                title: Text('Privacy and terms'),
+                subtitle: Text(
+                  'Privacy notice and terms must be completed before public launch',
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
