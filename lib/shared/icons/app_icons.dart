@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 
 class AppIcons {
@@ -27,11 +26,12 @@ class AppIcons {
   // Transport
   static const IconData jeepney = CupertinoIcons.bus;
   static const IconData bus = CupertinoIcons.bus;
-  static const IconData motorcycle = CupertinoIcons.bicycle;
-  static const IconData walking = CupertinoIcons.figure_walk;
+  static const IconData motorcycle = CupertinoIcons.car;
+  static const IconData walking = CupertinoIcons.person;
 
   // Safety and reports
-  static const IconData emergency = CupertinoIcons.exclamationmark_triangle_fill;
+  static const IconData emergency =
+      CupertinoIcons.exclamationmark_triangle_fill;
   static const IconData report = CupertinoIcons.flag;
   static const IconData warning = CupertinoIcons.exclamationmark_circle;
   static const IconData shield = CupertinoIcons.shield_fill;
