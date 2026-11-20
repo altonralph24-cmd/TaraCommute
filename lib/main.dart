@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -479,52 +480,56 @@ class ExplorePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        const Text(
-          'Find places around Davao City',
-          style: TextStyle(
-            fontSize: 21,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 12),
-        const TextField(
-          decoration: InputDecoration(
-            prefixIcon: Icon(Icons.search),
-            labelText: 'Search a place or address',
-            border: OutlineInputBorder(),
-          ),
-        ),
-        const SizedBox(height: 14),
-        for (final item in [
-          ('Schools and colleges', Icons.school_outlined),
-          (
-            'Hospitals, clinics and pharmacies',
-            Icons.local_hospital_outlined,
-          ),
-          ('Malls, shops and banks', Icons.storefront_outlined),
-          ('Restaurants and daily needs', Icons.restaurant_outlined),
-          (
-            'Parks and government offices',
-            Icons.account_balance_outlined,
-          ),
-          (
-            'Police, fire and public services',
-            Icons.local_police_outlined,
-          ),
-        ])
-          Card(
-            child: ListTile(
-              leading: Icon(item.$2),
-              title: Text(item.$1),
-              subtitle: const Text(
-                'Directory entries will be added and checked before publication.',
-              ),
+    final categories = [
+      ('Schools and colleges', Icons.school_outlined),
+      (
+        'Hospitals, clinics and pharmacies',
+        Icons.local_hospital_outlined,
+      ),
+      ('Malls, shops and banks', Icons.storefront_outlined),
+      ('Restaurants and daily needs', Icons.restaurant_outlined),
+      (
+        'Parks and government offices',
+        Icons.account_balance_outlined,
+      ),
+      (
+        'Police, fire and public services',
+        Icons.local_police_outlined,
+      ),
+    ];
+
+    return ResponsiveContent(
+      maxWidth: 900,
+      child: ListView(
+        children: [
+          const Text(
+            'Find places around Davao City',
+            style: TextStyle(
+              fontSize: 21,
+              fontWeight: FontWeight.bold,
             ),
           ),
-      ],
+          const SizedBox(height: 12),
+          const TextField(
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.search),
+              labelText: 'Search a place or address',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 14),
+          for (final item in categories)
+            Card(
+              child: ListTile(
+                leading: Icon(item.$2),
+                title: Text(item.$1),
+                subtitle: const Text(
+                  'Directory entries will be added and checked before publication.',
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
