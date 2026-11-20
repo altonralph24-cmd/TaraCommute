@@ -9,6 +9,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   
+
+const supabaseUrl =
+    String.fromEnvironment('SUPABASE_URL');
+
 const supabasePublishableKey =
     String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY');
 
@@ -19,8 +23,6 @@ if (supabaseUrl.isNotEmpty &&
     publishableKey: supabasePublishableKey,
   );
 }
-
-
   runApp(const TaraCommuteApp());
 }
 
