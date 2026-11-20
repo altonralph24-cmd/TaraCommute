@@ -257,7 +257,10 @@ class _CommutePageState extends State<CommutePage> {
             onSelectionChanged: (value) => setState(() => direction = value.first),
           ),
           const SizedBox(height: 8),
-          Text(dcBusServiceHours, style: const TextStyle(color: Colors.black54)),
+          const Text(
+  dcBusServiceHours,
+  style: TextStyle(color: Colors.black54),
+),
           const SizedBox(height: 12),
           Text('${selectedRoute.code} — $direction stops', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           ...stops.asMap().entries.map((entry) => ListTile(
