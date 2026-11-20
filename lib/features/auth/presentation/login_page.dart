@@ -46,7 +46,8 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
 
-      Navigator.pop(context);
+      // AuthGate automatically detects the new session.
+      // Do not pop the root LoginPage.
     } catch (error) {
       if (!mounted) return;
 
@@ -144,7 +145,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 32),
-
                     const Text(
                       'Email Address',
                       style: TextStyle(
@@ -193,9 +193,7 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                     ),
-
                     const SizedBox(height: 20),
-
                     const Text(
                       'Password',
                       style: TextStyle(
@@ -253,7 +251,6 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                     ),
-
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
@@ -269,9 +266,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 12),
-
                     SizedBox(
                       height: 52,
                       child: ElevatedButton(
@@ -301,9 +296,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                       ),
                     ),
-
                     const SizedBox(height: 24),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
