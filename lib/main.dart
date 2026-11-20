@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -534,80 +533,84 @@ class ExplorePage extends StatelessWidget {
   }
 }
 
-// TERMINALS PAGE
+// TERMINALS PAGE — STEP 9.6 RESPONSIVE UPDATE
 
 class TerminalsPage extends StatelessWidget {
   const TerminalsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: const [
-        Text(
-          'Transport terminals',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Find transport terminals and boarding locations around Davao City.',
-        ),
-        SizedBox(height: 16),
-        Card(
-          child: ListTile(
-            leading: Icon(Icons.directions_bus_outlined),
-            title: Text('Terminal directory'),
-            subtitle: Text(
-              'Verified terminal locations and details will be added here.',
+    return ResponsiveContent(
+      maxWidth: 900,
+      child: ListView(
+        children: const [
+          Text(
+            'Transport terminals',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
             ),
           ),
-        ),
-      ],
+          SizedBox(height: 8),
+          Text(
+            'Find transport terminals and boarding locations around Davao City.',
+          ),
+          SizedBox(height: 16),
+          Card(
+            child: ListTile(
+              leading: Icon(Icons.directions_bus_outlined),
+              title: Text('Terminal directory'),
+              subtitle: Text(
+                'Verified terminal locations and details will be added here.',
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-// ADVISORIES PAGE (EXISTING REPORTS FEATURE)
+// ADVISORIES PAGE — STEP 9.7 RESPONSIVE UPDATE
 
 class ReportsPage extends StatelessWidget {
   const ReportsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: const [
-        Text(
-          'Road and traffic updates',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Report an accident, traffic, road closure, flood or road hazard.',
-        ),
-        SizedBox(height: 12),
-        Text(
-          'Community reports are not connected yet. '
-          'Do not treat unverified reports as confirmed.',
-        ),
-        SizedBox(height: 12),
-        Card(
-          child: ListTile(
-            leading: Icon(Icons.info_outline),
-            title: Text('No public reports yet'),
-            subtitle: Text(
-              'Report sending, review and duplicate grouping will be '
-              'added with secure database support.',
+    return ResponsiveContent(
+      maxWidth: 900,
+      child: ListView(
+        children: const [
+          Text(
+            'Road and traffic updates',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
             ),
           ),
-        ),
-      ],
+          SizedBox(height: 8),
+          Text(
+            'Report an accident, traffic, road closure, flood or road hazard.',
+          ),
+          SizedBox(height: 12),
+          Text(
+            'Community reports are not connected yet. '
+            'Do not treat unverified reports as confirmed.',
+          ),
+          SizedBox(height: 12),
+          Card(
+            child: ListTile(
+              leading: Icon(Icons.info_outline),
+              title: Text('No public reports yet'),
+              subtitle: Text(
+                'Report sending, review and duplicate grouping will be '
+                'added with secure database support.',
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
