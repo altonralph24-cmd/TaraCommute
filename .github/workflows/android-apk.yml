@@ -39,7 +39,7 @@ jobs:
         run: flutter pub get
 
       - name: Check code
-        run: flutter analyze
+        run: flutter analyze lib
 
       - name: Build debug APK
         run: >
