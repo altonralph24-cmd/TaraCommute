@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -150,10 +149,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.sizeOf(context).width;
 
-    final mapHeight = (screenWidth * 0.55).clamp(
-      220.0,
-      360.0,
-    );
+    final double mapHeight =
+        (screenWidth * 0.55).clamp(220.0, 360.0).toDouble();
 
     return ResponsiveContent(
       maxWidth: 900,
@@ -292,182 +289,185 @@ class _CommutePageState extends State<CommutePage> {
   Widget build(BuildContext context) {
     final stops = selectedRoute.stopsFor(direction);
 
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        const Text(
-          'Plan your trip',
-          style: TextStyle(
-            fontSize: 23,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 12),
-        const TextField(
-          decoration: InputDecoration(
-            prefixIcon: Icon(Icons.my_location),
-            labelText: 'Where am I?',
-            border: OutlineInputBorder(),
-          ),
-        ),
-        const SizedBox(height: 10),
-        const TextField(
-          decoration: InputDecoration(
-            prefixIcon: Icon(Icons.place_outlined),
-            labelText: 'Where are you going?',
-            border: OutlineInputBorder(),
-          ),
-        ),
-        const SizedBox(height: 16),
-        const Text(
-          'Choose your ride',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-        const SizedBox(height: 8),
-        DropdownButtonFormField<String>(
-          value: selectedRide,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-          ),
-          items: const [
-            DropdownMenuItem(
-              value: 'Jeepney / Multicab',
-              child: Text('Jeepney / Multicab'),
-            ),
-            DropdownMenuItem(
-              value: 'DC Bus [FREE]',
-              child: Text('DC Bus [FREE]'),
-            ),
-            DropdownMenuItem(
-              value: 'Tricycle',
-              child: Text('Tricycle'),
-            ),
-            DropdownMenuItem(
-              value: 'TNV / Motorcycle Taxi',
-              child: Text('TNV / Motorcycle Taxi'),
-            ),
-          ],
-          onChanged: (value) {
-            setState(() {
-              selectedRide = value ?? selectedRide;
-            });
-          },
-        ),
-        if (selectedRide == 'DC Bus [FREE]') ...[
-          const SizedBox(height: 18),
+    return ResponsiveContent(
+      maxWidth: 900,
+      child: ListView(
+        children: [
           const Text(
-            'DC Bus routes',
+            'Plan your trip',
             style: TextStyle(
-              fontSize: 19,
+              fontSize: 23,
               fontWeight: FontWeight.bold,
-            ),
-          ),
-          const Text(
-            'Fare: FREE  •  Service times below are supplied schedule information.',
-          ),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<DcBusRoute>(
-            value: selectedRoute,
-            isExpanded: true,
-            decoration: const InputDecoration(
-              labelText: 'Choose a route',
-              border: OutlineInputBorder(),
-            ),
-            items: dcBusRoutes
-                .map(
-                  (route) => DropdownMenuItem(
-                    value: route,
-                    child: Text(
-                      '${route.code} — ${route.title}',
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                )
-                .toList(),
-            onChanged: (value) {
-              setState(() {
-                selectedRoute = value ?? selectedRoute;
-              });
-            },
-          ),
-          const SizedBox(height: 10),
-          SegmentedButton<String>(
-            segments: const [
-              ButtonSegment(
-                value: 'AM',
-                label: Text('AM direction'),
-              ),
-              ButtonSegment(
-                value: 'PM',
-                label: Text('PM direction'),
-              ),
-            ],
-            selected: {direction},
-            onSelectionChanged: (value) {
-              setState(() {
-                direction = value.first;
-              });
-            },
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            dcBusServiceHours,
-            style: TextStyle(
-              color: Colors.black54,
             ),
           ),
           const SizedBox(height: 12),
-          Text(
-            '${selectedRoute.code} — $direction stops',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          const TextField(
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.my_location),
+              labelText: 'Where am I?',
+              border: OutlineInputBorder(),
             ),
           ),
-          ...stops.asMap().entries.map(
-                (entry) => ListTile(
-                  dense: true,
-                  leading: CircleAvatar(
-                    radius: 14,
-                    child: Text(
-                      '${entry.key + 1}',
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ),
-                  title: Text(entry.value),
-                  trailing:
-                      entry.key == 0 || entry.key == stops.length - 1
-                          ? const Icon(
-                              Icons.flag_outlined,
-                              color: Colors.green,
-                            )
-                          : null,
-                ),
-              ),
-          const Text(
-            'These are stop names and order only. Map route lines '
-            'and boarding guidance will be added after every stop '
-            'is accurately located and checked.',
-            style: TextStyle(
-              color: Colors.deepOrange,
+          const SizedBox(height: 10),
+          const TextField(
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.place_outlined),
+              labelText: 'Where are you going?',
+              border: OutlineInputBorder(),
             ),
           ),
-        ] else ...[
           const SizedBox(height: 16),
-          Text(
-            '$selectedRide route details will appear when verified '
-            'local route or provider information is connected.',
-          ),
-          if (selectedRide == 'TNV / Motorcycle Taxi')
-            const Text(
-              'Possible providers: Grab, Maxim and JoyRide. '
-              'No booking or price quote is available in this starter version.',
+          const Text(
+            'Choose your ride',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
             ),
+          ),
+          const SizedBox(height: 8),
+          DropdownButtonFormField<String>(
+            value: selectedRide,
+            isExpanded: true,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+            items: const [
+              DropdownMenuItem(
+                value: 'Jeepney / Multicab',
+                child: Text('Jeepney / Multicab'),
+              ),
+              DropdownMenuItem(
+                value: 'DC Bus [FREE]',
+                child: Text('DC Bus [FREE]'),
+              ),
+              DropdownMenuItem(
+                value: 'Tricycle',
+                child: Text('Tricycle'),
+              ),
+              DropdownMenuItem(
+                value: 'TNV / Motorcycle Taxi',
+                child: Text('TNV / Motorcycle Taxi'),
+              ),
+            ],
+            onChanged: (value) {
+              setState(() {
+                selectedRide = value ?? selectedRide;
+              });
+            },
+          ),
+          if (selectedRide == 'DC Bus [FREE]') ...[
+            const SizedBox(height: 18),
+            const Text(
+              'DC Bus routes',
+              style: TextStyle(
+                fontSize: 19,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Text(
+              'Fare: FREE  •  Service times below are supplied schedule information.',
+            ),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<DcBusRoute>(
+              value: selectedRoute,
+              isExpanded: true,
+              decoration: const InputDecoration(
+                labelText: 'Choose a route',
+                border: OutlineInputBorder(),
+              ),
+              items: dcBusRoutes
+                  .map(
+                    (route) => DropdownMenuItem(
+                      value: route,
+                      child: Text(
+                        '${route.code} — ${route.title}',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedRoute = value ?? selectedRoute;
+                });
+              },
+            ),
+            const SizedBox(height: 10),
+            SegmentedButton<String>(
+              segments: const [
+                ButtonSegment(
+                  value: 'AM',
+                  label: Text('AM direction'),
+                ),
+                ButtonSegment(
+                  value: 'PM',
+                  label: Text('PM direction'),
+                ),
+              ],
+              selected: {direction},
+              onSelectionChanged: (value) {
+                setState(() {
+                  direction = value.first;
+                });
+              },
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              dcBusServiceHours,
+              style: TextStyle(
+                color: Colors.black54,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              '${selectedRoute.code} — $direction stops',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            ...stops.asMap().entries.map(
+                  (entry) => ListTile(
+                    dense: true,
+                    leading: CircleAvatar(
+                      radius: 14,
+                      child: Text(
+                        '${entry.key + 1}',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                    title: Text(entry.value),
+                    trailing:
+                        entry.key == 0 || entry.key == stops.length - 1
+                            ? const Icon(
+                                Icons.flag_outlined,
+                                color: Colors.green,
+                              )
+                            : null,
+                  ),
+                ),
+            const Text(
+              'These are stop names and order only. Map route lines '
+              'and boarding guidance will be added after every stop '
+              'is accurately located and checked.',
+              style: TextStyle(
+                color: Colors.deepOrange,
+              ),
+            ),
+          ] else ...[
+            const SizedBox(height: 16),
+            Text(
+              '$selectedRide route details will appear when verified '
+              'local route or provider information is connected.',
+            ),
+            if (selectedRide == 'TNV / Motorcycle Taxi')
+              const Text(
+                'Possible providers: Grab, Maxim and JoyRide. '
+                'No booking or price quote is available in this starter version.',
+              ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
