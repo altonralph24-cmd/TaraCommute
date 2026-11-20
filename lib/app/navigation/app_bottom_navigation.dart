@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
-import '../icons/app_icons.dart';
+import '../../shared/icons/app_icons.dart';
 
 class AppBottomNavigation extends StatelessWidget {
   const AppBottomNavigation({
