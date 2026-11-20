@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -6,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'data/dc_bus_routes.dart';
 import 'core/config/app_config.dart';
 import 'core/theme/app_theme.dart';
+import 'app/navigation/app_bottom_navigation.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,8 +16,7 @@ Future<void> main() async {
   const supabasePublishableKey =
       String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY');
 
-  if (supabaseUrl.isNotEmpty &&
-      supabasePublishableKey.isNotEmpty) {
+  if (supabaseUrl.isNotEmpty && supabasePublishableKey.isNotEmpty) {
     await Supabase.initialize(
       url: supabaseUrl,
       publishableKey: supabasePublishableKey,
@@ -49,21 +50,30 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int selectedTab = 0;
 
-  final pages = const [
+  final List<Widget> pages = const [
     HomePage(),
     CommutePage(),
     ExplorePage(),
+    TerminalsPage(),
     ReportsPage(),
-    ProfilePage(),
   ];
 
-  final titles = const [
+  final List<String> titles = const [
     'TaraCommute',
     'Commute',
-    'Explore',
-    'Reports / Activity',
-    'Profile',
+    'Nearby',
+    'Terminals',
+    'Advisories',
   ];
+
+  void openProfile() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ProfilePage(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +84,11 @@ class _MainShellState extends State<MainShell> {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
+          IconButton(
+            tooltip: 'Profile',
+            onPressed: openProfile,
+            icon: const Icon(Icons.person_outline),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 10),
             child: FilledButton.tonalIcon(
@@ -91,38 +106,13 @@ class _MainShellState extends State<MainShell> {
         index: selectedTab,
         children: pages,
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: selectedTab,
-        onDestinationSelected: (value) {
-          setState(() => selectedTab = value);
+      bottomNavigationBar: AppBottomNavigation(
+        currentIndex: selectedTab,
+        onTap: (value) {
+          setState(() {
+            selectedTab = value;
+          });
         },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.directions_bus_outlined),
-            selectedIcon: Icon(Icons.directions_bus),
-            label: 'Commute',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.explore_outlined),
-            selectedIcon: Icon(Icons.explore),
-            label: 'Explore',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.campaign_outlined),
-            selectedIcon: Icon(Icons.campaign),
-            label: 'Reports',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
       ),
     );
   }
@@ -148,6 +138,8 @@ void showEmergencyDialog(BuildContext context) {
   );
 }
 
+// HOME PAGE
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -158,7 +150,10 @@ class HomePage extends StatelessWidget {
       children: [
         const Text(
           'Asa ka padulong?',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 6),
         const Text('Find a way to get around Davao City.'),
@@ -171,23 +166,32 @@ class HomePage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 14),
-        const SizedBox(height: 280, child: DavaoMapPreview()),
+        const SizedBox(
+          height: 280,
+          child: DavaoMapPreview(),
+        ),
         const SizedBox(height: 12),
         const Text(
           'Choose your ride',
-          style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 19,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 8),
         const TransportChoices(),
         const SizedBox(height: 12),
         const Text(
-          'Map note: live traffic and live vehicle locations are not connected yet.',
+          'Map note: live traffic and live vehicle locations '
+          'are not connected yet.',
           style: TextStyle(color: Colors.black54),
         ),
       ],
     );
   }
 }
+
+// DAVAO MAP PREVIEW
 
 class DavaoMapPreview extends StatelessWidget {
   const DavaoMapPreview({super.key});
@@ -218,6 +222,8 @@ class DavaoMapPreview extends StatelessWidget {
   }
 }
 
+// TRANSPORT CHOICES
+
 class TransportChoices extends StatelessWidget {
   const TransportChoices({super.key});
 
@@ -246,6 +252,8 @@ class TransportChoices extends StatelessWidget {
   }
 }
 
+// COMMUTE PAGE
+
 class CommutePage extends StatefulWidget {
   const CommutePage({super.key});
 
@@ -267,7 +275,10 @@ class _CommutePageState extends State<CommutePage> {
       children: [
         const Text(
           'Plan your trip',
-          style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 23,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 12),
         const TextField(
@@ -288,7 +299,10 @@ class _CommutePageState extends State<CommutePage> {
         const SizedBox(height: 16),
         const Text(
           'Choose your ride',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
@@ -315,14 +329,19 @@ class _CommutePageState extends State<CommutePage> {
             ),
           ],
           onChanged: (value) {
-            setState(() => selectedRide = value ?? selectedRide);
+            setState(() {
+              selectedRide = value ?? selectedRide;
+            });
           },
         ),
         if (selectedRide == 'DC Bus [FREE]') ...[
           const SizedBox(height: 18),
           const Text(
             'DC Bus routes',
-            style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 19,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const Text(
             'Fare: FREE  •  Service times below are supplied schedule information.',
@@ -347,18 +366,28 @@ class _CommutePageState extends State<CommutePage> {
                 )
                 .toList(),
             onChanged: (value) {
-              setState(() => selectedRoute = value ?? selectedRoute);
+              setState(() {
+                selectedRoute = value ?? selectedRoute;
+              });
             },
           ),
           const SizedBox(height: 10),
           SegmentedButton<String>(
             segments: const [
-              ButtonSegment(value: 'AM', label: Text('AM direction')),
-              ButtonSegment(value: 'PM', label: Text('PM direction')),
+              ButtonSegment(
+                value: 'AM',
+                label: Text('AM direction'),
+              ),
+              ButtonSegment(
+                value: 'PM',
+                label: Text('PM direction'),
+              ),
             ],
             selected: {direction},
             onSelectionChanged: (value) {
-              setState(() => direction = value.first);
+              setState(() {
+                direction = value.first;
+              });
             },
           ),
           const SizedBox(height: 8),
@@ -385,29 +414,39 @@ class _CommutePageState extends State<CommutePage> {
                     ),
                   ),
                   title: Text(entry.value),
-                  trailing: entry.key == 0 || entry.key == stops.length - 1
-                      ? const Icon(Icons.flag_outlined, color: Colors.green)
-                      : null,
+                  trailing:
+                      entry.key == 0 || entry.key == stops.length - 1
+                          ? const Icon(
+                              Icons.flag_outlined,
+                              color: Colors.green,
+                            )
+                          : null,
                 ),
               ),
           const Text(
-            'These are stop names and order only. Map route lines and boarding guidance will be added after every stop is accurately located and checked.',
+            'These are stop names and order only. Map route lines '
+            'and boarding guidance will be added after every stop '
+            'is accurately located and checked.',
             style: TextStyle(color: Colors.deepOrange),
           ),
         ] else ...[
           const SizedBox(height: 16),
           Text(
-            '$selectedRide route details will appear when verified local route or provider information is connected.',
+            '$selectedRide route details will appear when verified '
+            'local route or provider information is connected.',
           ),
           if (selectedRide == 'TNV / Motorcycle Taxi')
             const Text(
-              'Possible providers: Grab, Maxim and JoyRide. No booking or price quote is available in this starter version.',
+              'Possible providers: Grab, Maxim and JoyRide. '
+              'No booking or price quote is available in this starter version.',
             ),
         ],
       ],
     );
   }
 }
+
+// NEARBY PAGE (EXISTING EXPLORE FEATURE)
 
 class ExplorePage extends StatelessWidget {
   const ExplorePage({super.key});
@@ -419,7 +458,10 @@ class ExplorePage extends StatelessWidget {
       children: [
         const Text(
           'Find places around Davao City',
-          style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 21,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 12),
         const TextField(
@@ -432,11 +474,20 @@ class ExplorePage extends StatelessWidget {
         const SizedBox(height: 14),
         for (final item in [
           ('Schools and colleges', Icons.school_outlined),
-          ('Hospitals, clinics and pharmacies', Icons.local_hospital_outlined),
+          (
+            'Hospitals, clinics and pharmacies',
+            Icons.local_hospital_outlined,
+          ),
           ('Malls, shops and banks', Icons.storefront_outlined),
           ('Restaurants and daily needs', Icons.restaurant_outlined),
-          ('Parks and government offices', Icons.account_balance_outlined),
-          ('Police, fire and public services', Icons.local_police_outlined),
+          (
+            'Parks and government offices',
+            Icons.account_balance_outlined,
+          ),
+          (
+            'Police, fire and public services',
+            Icons.local_police_outlined,
+          ),
         ])
           Card(
             child: ListTile(
@@ -452,6 +503,44 @@ class ExplorePage extends StatelessWidget {
   }
 }
 
+// TERMINALS PAGE
+
+class TerminalsPage extends StatelessWidget {
+  const TerminalsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: const [
+        Text(
+          'Transport terminals',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 8),
+        Text(
+          'Find transport terminals and boarding locations around Davao City.',
+        ),
+        SizedBox(height: 16),
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.directions_bus_outlined),
+            title: Text('Terminal directory'),
+            subtitle: Text(
+              'Verified terminal locations and details will be added here.',
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ADVISORIES PAGE (EXISTING REPORTS FEATURE)
+
 class ReportsPage extends StatelessWidget {
   const ReportsPage({super.key});
 
@@ -462,7 +551,10 @@ class ReportsPage extends StatelessWidget {
       children: const [
         Text(
           'Road and traffic updates',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         SizedBox(height: 8),
         Text(
@@ -470,7 +562,8 @@ class ReportsPage extends StatelessWidget {
         ),
         SizedBox(height: 12),
         Text(
-          'Community reports are not connected yet. Do not treat unverified reports as confirmed.',
+          'Community reports are not connected yet. '
+          'Do not treat unverified reports as confirmed.',
         ),
         SizedBox(height: 12),
         Card(
@@ -478,7 +571,8 @@ class ReportsPage extends StatelessWidget {
             leading: Icon(Icons.info_outline),
             title: Text('No public reports yet'),
             subtitle: Text(
-              'Report sending, review and duplicate grouping will be added with secure database support.',
+              'Report sending, review and duplicate grouping will be '
+              'added with secure database support.',
             ),
           ),
         ),
@@ -487,6 +581,8 @@ class ReportsPage extends StatelessWidget {
   }
 }
 
+// PROFILE PAGE
+
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
@@ -494,55 +590,63 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final connected = Supabase.instance.isInitialized;
 
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        const CircleAvatar(
-          radius: 34,
-          child: Icon(Icons.person, size: 36),
-        ),
-        const SizedBox(height: 12),
-        const Text(
-          'Your TaraCommute profile',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.cloud_outlined),
-            title: const Text('Online database'),
-            subtitle: Text(
-              connected
-                  ? 'Supabase connection initialized'
-                  : 'Starter mode — Supabase keys not added',
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          const CircleAvatar(
+            radius: 34,
+            child: Icon(Icons.person, size: 36),
+          ),
+          const SizedBox(height: 12),
+          const Text(
+            'Your TaraCommute profile',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
           ),
-        ),
-        const Card(
-          child: ListTile(
-            leading: Icon(Icons.bookmark_outline),
-            title: Text('Saved trips'),
-            subtitle: Text('Coming in a later development step'),
-          ),
-        ),
-        const Card(
-          child: ListTile(
-            leading: Icon(Icons.language),
-            title: Text('Language'),
-            subtitle: Text('English / Filipino support will be added'),
-          ),
-        ),
-        const Card(
-          child: ListTile(
-            leading: Icon(Icons.privacy_tip_outlined),
-            title: Text('Privacy and terms'),
-            subtitle: Text(
-              'Privacy notice and terms must be completed before public launch',
+          const SizedBox(height: 16),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.cloud_outlined),
+              title: const Text('Online database'),
+              subtitle: Text(
+                connected
+                    ? 'Supabase connection initialized'
+                    : 'Starter mode — Supabase keys not added',
+              ),
             ),
           ),
-        ),
-      ],
+          const Card(
+            child: ListTile(
+              leading: Icon(Icons.bookmark_outline),
+              title: Text('Saved trips'),
+              subtitle: Text('Coming in a later development step'),
+            ),
+          ),
+          const Card(
+            child: ListTile(
+              leading: Icon(Icons.language),
+              title: Text('Language'),
+              subtitle: Text('English / Filipino support will be added'),
+            ),
+          ),
+          const Card(
+            child: ListTile(
+              leading: Icon(Icons.privacy_tip_outlined),
+              title: Text('Privacy and terms'),
+              subtitle: Text(
+                'Privacy notice and terms must be completed before public launch',
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
