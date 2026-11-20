@@ -8,6 +8,7 @@ import 'data/dc_bus_routes.dart';
 import 'core/config/app_config.dart';
 import 'core/theme/app_theme.dart';
 import 'app/navigation/app_bottom_navigation.dart';
+import 'shared/widgets/responsive_content.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -81,7 +82,9 @@ class _MainShellState extends State<MainShell> {
       appBar: AppBar(
         title: Text(
           titles[selectedTab],
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         actions: [
           IconButton(
@@ -145,48 +148,62 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        const Text(
-          'Asa ka padulong?',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+    final screenWidth = MediaQuery.sizeOf(context).width;
+
+    final mapHeight = (screenWidth * 0.55).clamp(
+      220.0,
+      360.0,
+    );
+
+    return ResponsiveContent(
+      maxWidth: 900,
+      child: ListView(
+        children: [
+          const Text(
+            'Asa ka padulong?',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const SizedBox(height: 6),
-        const Text('Find a way to get around Davao City.'),
-        const SizedBox(height: 14),
-        const TextField(
-          decoration: InputDecoration(
-            prefixIcon: Icon(Icons.search),
-            labelText: 'Where are you going?',
-            border: OutlineInputBorder(),
+          const SizedBox(height: 6),
+          const Text(
+            'Find a way to get around Davao City.',
           ),
-        ),
-        const SizedBox(height: 14),
-        const SizedBox(
-          height: 280,
-          child: DavaoMapPreview(),
-        ),
-        const SizedBox(height: 12),
-        const Text(
-          'Choose your ride',
-          style: TextStyle(
-            fontSize: 19,
-            fontWeight: FontWeight.bold,
+          const SizedBox(height: 14),
+          const TextField(
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.search),
+              labelText: 'Where are you going?',
+              border: OutlineInputBorder(),
+            ),
           ),
-        ),
-        const SizedBox(height: 8),
-        const TransportChoices(),
-        const SizedBox(height: 12),
-        const Text(
-          'Map note: live traffic and live vehicle locations '
-          'are not connected yet.',
-          style: TextStyle(color: Colors.black54),
-        ),
-      ],
+          const SizedBox(height: 14),
+          SizedBox(
+            height: mapHeight,
+            width: double.infinity,
+            child: const DavaoMapPreview(),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Choose your ride',
+            style: TextStyle(
+              fontSize: 19,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const TransportChoices(),
+          const SizedBox(height: 16),
+          const Text(
+            'Map note: live traffic and live vehicle locations '
+            'are not connected yet.',
+            style: TextStyle(
+              color: Colors.black54,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -213,7 +230,9 @@ class DavaoMapPreview extends StatelessWidget {
           ),
           const RichAttributionWidget(
             attributions: [
-              TextSourceAttribution('© OpenStreetMap contributors'),
+              TextSourceAttribution(
+                '© OpenStreetMap contributors',
+              ),
             ],
           ),
         ],
@@ -242,7 +261,10 @@ class TransportChoices extends StatelessWidget {
       children: choices
           .map(
             (choice) => Chip(
-              avatar: Icon(choice.$2, size: 19),
+              avatar: Icon(
+                choice.$2,
+                size: 19,
+              ),
               label: Text(choice.$1),
               padding: const EdgeInsets.all(8),
             ),
@@ -393,7 +415,9 @@ class _CommutePageState extends State<CommutePage> {
           const SizedBox(height: 8),
           const Text(
             dcBusServiceHours,
-            style: TextStyle(color: Colors.black54),
+            style: TextStyle(
+              color: Colors.black54,
+            ),
           ),
           const SizedBox(height: 12),
           Text(
@@ -427,7 +451,9 @@ class _CommutePageState extends State<CommutePage> {
             'These are stop names and order only. Map route lines '
             'and boarding guidance will be added after every stop '
             'is accurately located and checked.',
-            style: TextStyle(color: Colors.deepOrange),
+            style: TextStyle(
+              color: Colors.deepOrange,
+            ),
           ),
         ] else ...[
           const SizedBox(height: 16),
@@ -599,7 +625,10 @@ class ProfilePage extends StatelessWidget {
         children: [
           const CircleAvatar(
             radius: 34,
-            child: Icon(Icons.person, size: 36),
+            child: Icon(
+              Icons.person,
+              size: 36,
+            ),
           ),
           const SizedBox(height: 12),
           const Text(
@@ -626,14 +655,18 @@ class ProfilePage extends StatelessWidget {
             child: ListTile(
               leading: Icon(Icons.bookmark_outline),
               title: Text('Saved trips'),
-              subtitle: Text('Coming in a later development step'),
+              subtitle: Text(
+                'Coming in a later development step',
+              ),
             ),
           ),
           const Card(
             child: ListTile(
               leading: Icon(Icons.language),
               title: Text('Language'),
-              subtitle: Text('English / Filipino support will be added'),
+              subtitle: Text(
+                'English / Filipino support will be added',
+              ),
             ),
           ),
           const Card(
