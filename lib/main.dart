@@ -8,15 +8,18 @@ import 'data/dc_bus_routes.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  const supabasePublishableKey =
+  
+const supabasePublishableKey =
     String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY');
 
-if (supabaseUrl.isNotEmpty && supabasePublishableKey.isNotEmpty) {
+if (supabaseUrl.isNotEmpty &&
+    supabasePublishableKey.isNotEmpty) {
   await Supabase.initialize(
     url: supabaseUrl,
     publishableKey: supabasePublishableKey,
   );
 }
+
 
   runApp(const TaraCommuteApp());
 }
