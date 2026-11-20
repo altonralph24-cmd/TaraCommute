@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/services/auth_service.dart';
+import 'email_verification_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -42,6 +43,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     try {
       final response = await _authService.register(
+        fullName: _nameController.text,
         email: _emailController.text,
         password: _passwordController.text,
       );
@@ -49,22 +51,43 @@ class _RegisterPageState extends State<RegisterPage> {
       if (!mounted) return;
 
       if (response.user != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Registration submitted. Check your email for verification.',
+        final email = _emailController.text.trim();
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EmailVerificationPage(
+              email: email,
             ),
           ),
         );
-
-        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Registration could not be completed. Please try again.',
+            ),
+          ),
+        );
       }
-    } on Exception catch (error) {
+    } on AuthException catch (error) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Registration failed: $error'),
+          content: Text(
+            'Registration failed: ${error.message}',
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Something went wrong. Please try again later.',
+          ),
         ),
       );
     } finally {
@@ -81,7 +104,8 @@ class _RegisterPageState extends State<RegisterPage> {
       return 'Please enter your email address';
     }
 
-    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(value.trim())) {
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+$')
+        .hasMatch(value.trim())) {
       return 'Please enter a valid email address';
     }
 
@@ -144,7 +168,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
+                        if (value == null ||
+                            value.trim().isEmpty) {
                           return 'Please enter your full name';
                         }
                         return null;
@@ -172,7 +197,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
-                              _obscurePassword = !_obscurePassword;
+                              _obscurePassword =
+                                  !_obscurePassword;
                             });
                           },
                           icon: Icon(
@@ -207,9 +233,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please confirm your password';
+                        }
+
                         if (value != _passwordController.text) {
                           return 'Passwords do not match';
                         }
+
                         return null;
                       },
                     ),
@@ -231,9 +262,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     const SizedBox(height: 16),
                     TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                              Navigator.pop(context);
+                            },
                       child: const Text(
                         'Already have an account? Sign in',
                       ),
