@@ -670,8 +670,7 @@ class ReportsPage extends StatelessWidget {
     );
   }
 }
-
-// PROFILE PAGE
+ // PROFILE PAGE
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -679,12 +678,21 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final connected = Supabase.instance.isInitialized;
+
     final user = connected
         ? Supabase.instance.client.auth.currentUser
         : null;
 
-    final fullName =
-        user?.userMetadata?['full_name'] as String?;
+    final metadataName = user?.userMetadata?['full_name'];
+
+    final fullName = metadataName is String
+        ? metadataName
+        : null;
+
+    final displayName =
+        fullName != null && fullName.trim().isNotEmpty
+            ? fullName
+            : 'Your TaraCommute profile';
 
     return Scaffold(
       appBar: AppBar(
@@ -706,9 +714,7 @@ class ProfilePage extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              fullName?.isNotEmpty == true
-                  ? fullName!
-                  : 'Your TaraCommute profile',
+              displayName,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 20,
@@ -736,29 +742,29 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
             ),
-            Card(
+            const Card(
               child: ListTile(
-                leading: const Icon(Icons.bookmark_outline),
-                title: const Text('Saved trips'),
-                subtitle: const Text(
+                leading: Icon(Icons.bookmark_outline),
+                title: Text('Saved trips'),
+                subtitle: Text(
                   'Save your regular destinations in a future update.',
                 ),
               ),
             ),
-            Card(
+            const Card(
               child: ListTile(
-                leading: const Icon(Icons.language_outlined),
-                title: const Text('Language'),
-                subtitle: const Text(
+                leading: Icon(Icons.language_outlined),
+                title: Text('Language'),
+                subtitle: Text(
                   'Language preferences will be available here.',
                 ),
               ),
             ),
-            Card(
+            const Card(
               child: ListTile(
-                leading: const Icon(Icons.privacy_tip_outlined),
-                title: const Text('Privacy and security'),
-                subtitle: const Text(
+                leading: Icon(Icons.privacy_tip_outlined),
+                title: Text('Privacy and security'),
+                subtitle: Text(
                   'Account privacy and security settings.',
                 ),
               ),
