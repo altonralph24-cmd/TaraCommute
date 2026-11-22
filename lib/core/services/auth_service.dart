@@ -1,8 +1,10 @@
-
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService {
   final SupabaseClient _client = Supabase.instance.client;
+
+  static const String authRedirectUrl =
+      'com.bueraglobal.taracommute://login-callback';
 
   User? get currentUser => _client.auth.currentUser;
 
@@ -28,6 +30,7 @@ class AuthService {
     return await _client.auth.signUp(
       email: email.trim(),
       password: password,
+      emailRedirectTo: authRedirectUrl,
       data: trimmedName == null || trimmedName.isEmpty
           ? null
           : {
@@ -51,6 +54,7 @@ class AuthService {
   }) async {
     await _client.auth.resetPasswordForEmail(
       email.trim(),
+      redirectTo: authRedirectUrl,
     );
   }
 
@@ -60,6 +64,7 @@ class AuthService {
     await _client.auth.resend(
       type: OtpType.signup,
       email: email.trim(),
+      emailRedirectTo: authRedirectUrl,
     );
   }
 
