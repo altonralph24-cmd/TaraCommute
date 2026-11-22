@@ -679,6 +679,12 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final connected = Supabase.instance.isInitialized;
+    final user = connected
+        ? Supabase.instance.client.auth.currentUser
+        : null;
+
+    final fullName =
+        user?.userMetadata?['full_name'] as String?;
 
     return Scaffold(
       appBar: AppBar(
@@ -699,14 +705,25 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            const Text(
-              'Your TaraCommute profile',
+            Text(
+              fullName?.isNotEmpty == true
+                  ? fullName!
+                  : 'Your TaraCommute profile',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
+            const SizedBox(height: 6),
+            if (user?.email != null)
+              Text(
+                user!.email!,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.black54,
+                ),
+              ),
             const SizedBox(height: 16),
             Card(
               child: ListTile(
@@ -719,4 +736,37 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
             ),
-            const Card(
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.bookmark_outline),
+                title: const Text('Saved trips'),
+                subtitle: const Text(
+                  'Save your regular destinations in a future update.',
+                ),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.language_outlined),
+                title: const Text('Language'),
+                subtitle: const Text(
+                  'Language preferences will be available here.',
+                ),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.privacy_tip_outlined),
+                title: const Text('Privacy and security'),
+                subtitle: const Text(
+                  'Account privacy and security settings.',
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+}
