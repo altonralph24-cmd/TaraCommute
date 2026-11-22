@@ -44,6 +44,84 @@ jobs:
             flutter create --platforms=android --org com.bueraglobal.taracommute .
           fi
 
+      - name: Configure TaraCommute authentication deep link
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+
+          manifest_path = Path("android/app/src/main/AndroidManifest.xml")
+          android_ns = "http://schemas.android.com/apk/res/android"
+
+          if not manifest_path.exists():
+              raise SystemExit("AndroidManifest.xml was not found.")
+
+          ET.register_namespace("android", android_ns)
+
+          tree = ET.parse(manifest_path)
+          root = tree.getroot()
+
+          activity = root.find("./application/activity")
+
+          if activity is None:
+              raise SystemExit("Main Android activity was not found.")
+
+          scheme_key = f"{{{android_ns}}}scheme"
+          host_key = f"{{{android_ns}}}host"
+          name_key = f"{{{android_ns}}}name"
+
+          already_configured = False
+
+          for intent_filter in activity.findall("intent-filter"):
+              for data in intent_filter.findall("data"):
+                  if (
+                      data.get(scheme_key) == "com.bueraglobal.taracommute"
+                      and data.get(host_key) == "login-callback"
+                  ):
+                      already_configured = True
+                      break
+              if already_configured:
+                  break
+
+          if not already_configured:
+              intent_filter = ET.SubElement(activity, "intent-filter")
+
+              ET.SubElement(
+                  intent_filter,
+                  "action",
+                  {name_key: "android.intent.action.VIEW"},
+              )
+
+              ET.SubElement(
+                  intent_filter,
+                  "category",
+                  {name_key: "android.intent.category.DEFAULT"},
+              )
+
+              ET.SubElement(
+                  intent_filter,
+                  "category",
+                  {name_key: "android.intent.category.BROWSABLE"},
+              )
+
+              ET.SubElement(
+                  intent_filter,
+                  "data",
+                  {
+                      scheme_key: "com.bueraglobal.taracommute",
+                      host_key: "login-callback",
+                  },
+              )
+
+          tree.write(
+              manifest_path,
+              encoding="utf-8",
+              xml_declaration=True,
+          )
+
+          print("TaraCommute authentication deep link configured.")
+          PY
+
       - name: Upload Android configuration for inspection
         uses: actions/upload-artifact@v4
         with:
