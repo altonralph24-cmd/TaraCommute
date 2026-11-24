@@ -1,0 +1,52 @@
+
+name: Build TaraCommute Web
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'lib/**'
+      - 'assets/**'
+      - 'pubspec.yaml'
+      - '.github/workflows/web-build.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-web:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.3'
+          channel: stable
+          cache: true
+
+      - name: Prepare Flutter Web
+        run: |
+          flutter create --platforms=web .
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build TaraCommute Web
+        run: |
+          flutter build web --release \
+            --dart-define=SUPABASE_URL="${{ secrets.SUPABASE_URL }}" \
+            --dart-define=SUPABASE_PUBLISHABLE_KEY="${{ secrets.SUPABASE_PUBLISHABLE_KEY }}"
+
+      - name: Upload Web Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: taracommute-web-build
+          path: build/web/
+          if-no-files-found: error
+          
